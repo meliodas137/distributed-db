@@ -1,10 +1,10 @@
-CC=gcc
-CFLAGS=-g -pedantic -std=gnu17 -Wall -Werror -Wextra
+.PHONY: clean main
 
-.PHONY: main
+all: main 
 
-main: main.o main.cpp main.hpp
-
-.PHONY: clean
 clean:
-	rm -f *.o nyush
+	rm -rf build
+
+main: 
+	mkdir -p build
+	cd build && cmake .. && make
