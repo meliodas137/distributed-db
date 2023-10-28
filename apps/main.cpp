@@ -5,7 +5,6 @@
 #include <string>
 #include <sstream>
 
-
 #include "distributedDB/transaction_manager/TransactionManager.hpp"
 #include "distributedDB/utils/Utils.hpp"
 
@@ -44,42 +43,61 @@ TransactionManager initializeTM() {
     return TransactionManager(dmCount, dmToVarList);
 }
 
-string runCommand(TransactionManager tm, vector<string> cmdArgs) {
+string runCommand(TransactionManager &tm, vector<string> &cmdArgs) {
     string formatError = "Invalid Command Format.";
+
+    if(cmdArgs.empty()) {
+        return "INVALID COMMAND";
+    }
+
     try{
-        if (cmdArgs[0]=="begin"){
-            if(cmdArgs.size() != 2){throw invalid_argument(formatError);}
+        if (cmdArgs[0] == "begin"){
+            if(cmdArgs.size() != 2) {
+                throw invalid_argument(formatError);
+            }
             int transactionId = stoi(cmdArgs[1]);
             return tm.beginTransaction(transactionId);
         }
-        else if (cmdArgs[0]=="end"){
-            if(cmdArgs.size() != 2){throw invalid_argument(formatError);}
+        else if (cmdArgs[0] == "end"){
+            if(cmdArgs.size() != 2) {
+                throw invalid_argument(formatError);
+            }
             int transactionId = stoi(cmdArgs[1]);
             return tm.endTransaction(transactionId);
         }
-        else if (cmdArgs[0]=="dump"){
-            if(cmdArgs.size() != 1){throw invalid_argument(formatError);}
+        else if (cmdArgs[0] == "dump"){
+            if(cmdArgs.size() != 1) {
+                throw invalid_argument(formatError);
+            }
             return tm.dumpData();
         }
-        else if (cmdArgs[0]=="fail"){
-            if(cmdArgs.size() != 2){throw invalid_argument(formatError);}
+        else if (cmdArgs[0] == "fail"){
+            if(cmdArgs.size() != 2) {
+                throw invalid_argument(formatError);
+            }
             int dataManagerId = stoi(cmdArgs[1]);
             return tm.failDataManager(dataManagerId);
         }
-        else if (cmdArgs[0]=="recover"){
-            if(cmdArgs.size() != 2){throw invalid_argument(formatError);}
+        else if (cmdArgs[0] == "recover"){
+            if(cmdArgs.size() != 2) {
+                throw invalid_argument(formatError);
+            }
             int dataManagerId = stoi(cmdArgs[1]);
             return tm.recoverDataManager(dataManagerId);
         }
-        else if (cmdArgs[0]=="R"){
-            if(cmdArgs.size() != 3){throw invalid_argument(formatError);}
+        else if (cmdArgs[0] == "R"){
+            if(cmdArgs.size() != 3) {
+                throw invalid_argument(formatError);
+            }
             int transactionId = stoi(cmdArgs[1]);
             int dataId = stoi(cmdArgs[2]);
             
             return tm.readData(transactionId, dataId);
         }
-        else if (cmdArgs[0]=="W"){
-            if(cmdArgs.size() != 4){throw invalid_argument(formatError);}
+        else if (cmdArgs[0] == "W"){
+            if(cmdArgs.size() != 4) {
+                throw invalid_argument(formatError);
+            }
             int transactionId = stoi(cmdArgs[1]);
             int dataId = stoi(cmdArgs[2]);
             int dataValue = stoi(cmdArgs[3]);
@@ -111,8 +129,10 @@ int main(int argc, char *argv[]) {
         istringstream is(inputCmd);
         vector<string> cmdArgs;
         while(getline(is, arg, ' ')){
-            //cout << "curr arg" << arg << "after arg" << endl;
-            if(arg != ""){cmdArgs.push_back(arg);}  
+            // cout << "curr arg" << arg << "after arg" << endl;
+            if(arg != "") {
+                cmdArgs.push_back(arg);
+            }  
         }
         cout << runCommand(tm, cmdArgs) << endl;
     }

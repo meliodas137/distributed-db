@@ -20,7 +20,7 @@ using namespace std;
 namespace distributedDB {
 class TransactionManager {
   public:
-    TransactionManager(int dmCount, unordered_map<int, vector<int>> dmToVarlist);
+    TransactionManager(int dmCount, unordered_map<int, vector<int>> &dmToVarlist);
     string beginTransaction(int transactionId);
     string endTransaction(int transactionId);
     string readData(int transactionId, int dataId);

@@ -7,7 +7,7 @@
 using namespace std;
 
 namespace distributedDB {
-TransactionManager::TransactionManager(int dmCount, unordered_map<int, vector<int>> dmToVarlist){};
+TransactionManager::TransactionManager(int dmCount, unordered_map<int, vector<int>> &dmToVarlist){};
 string TransactionManager::beginTransaction(int transactionId){ return "Not Implemented Error.";};
 string TransactionManager::endTransaction(int transactionId){ return "Not Implemented Error.";};
 string TransactionManager::readData(int transactionId, int dataId){ return "Not Implemented Error.";};
