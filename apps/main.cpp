@@ -6,7 +6,7 @@
 #include <sstream>
 
 #include "distributedDB/transaction_manager/TransactionManager.hpp"
-#include "distributedDB/utils/Utils.hpp"
+#include "distributedDB/utils/utils.hpp"
 
 namespace distributedDB {};
 using namespace distributedDB;
@@ -17,23 +17,17 @@ TransactionManager initializeTM() {
     int dmCount = 10;
     int varCount = 20;
 
-    unordered_map<int, vector<int>> dmToVarList; 
-    for(int dm = 1; dm <= dmCount; dm++){
-        vector<int> v;
-        dmToVarList[dm] = v;
-    };
-
+    vector<vector<int>> dmToVarList(dmCount, vector<int>()); 
     for(int var = 1; var <= varCount; var++){
-        //odd variables will go to var%10 + 1 th data site
-        if(var%2 == 1){
-            int dm = var%10 + 1;
-            dmToVarList[dm].push_back(var);
+        //odd variables will go to var%10 th data site
+        if(var%2){
+            int dm = var%10;
+            dmToVarList[dm].emplace_back(var);
         }
-
         //even variables will go to all data sites
-        else if(var%2 == 1){
-            for(int dm = 1; dm <= dmCount; dm++){
-                dmToVarList[dm].push_back(var);
+        else {
+            for(int dm = 0; dm < dmCount; dm++){
+                dmToVarList[dm].emplace_back(var);
             };
         }
         
