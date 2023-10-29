@@ -15,6 +15,7 @@
 #include <string>
 #include <unordered_map>
 #include "distributedDB/data_manager/DataManager.hpp"
+#include "distributedDB/transaction_manager/graph/Graph.hpp"
 #include "distributedDB/transaction_manager/transaction/Transaction.hpp"
 
 using namespace std;
@@ -27,6 +28,7 @@ private:
   vector<DataManager> managers = {};
   unordered_map<int, vector<Transaction>> transactions;
   int globalClock = 0;
+  Graph* serializationGraph = new Graph();
 
 private:
   int incrementClock();
