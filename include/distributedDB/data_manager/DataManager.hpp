@@ -20,5 +20,7 @@ private:
 
 public:
     DataManager(vector<int> &dataItems);
+    void setDataSnapshot(int time, int value, int dataId);
+    int getDataSnapshot(int time, int dataId);
 };
 }
