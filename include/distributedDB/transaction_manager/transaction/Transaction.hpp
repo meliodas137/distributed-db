@@ -18,11 +18,29 @@
 using namespace std;
 
 namespace distributedDB {
+
+enum EdgeType{
+    READ_WRITE,
+    WRITE_READ,
+    WRITE_WRITE
+};
 class Transaction {
 private: 
+  int beginTime;
+  int commitTime;
+  unordered_map<int, int> readSet;
+  unordered_map<int, int> writeSet;
+  vector<pair<int, EdgeType>> outEdges;
 
 public:
-  Transaction();
+  Transaction(int beginTime);
+  void setCommitTime(int time);
+  int getCommitTime();
+  int getBeginTime();
+  bool inReadSet(int t_id);
+  bool inWriteSet(int t_id);
+  void addEdge(int t_id, EdgeType type);
+  vector<pair<int, EdgeType>> getEdges();
 };
 }
 #endif 

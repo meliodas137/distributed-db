@@ -18,15 +18,8 @@
 using namespace std;
 
 namespace distributedDB {
-
-enum EdgeType{
-    READ,
-    WRITE,
-};
-
 class Graph {
 private: 
-    unordered_map<int, vector<pair<int, EdgeType>>> adjacencyList;
 
 public:
     Graph();
