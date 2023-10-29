@@ -6,3 +6,4 @@
 
 add_subdirectory(transaction_manager)
 add_subdirectory(utils)
+add_subdirectory(data_manager)
