@@ -17,7 +17,7 @@ TransactionManager initializeTM() {
     int dmCount = 10;
     int varCount = 20;
 
-    vector<vector<int>> dmToVarList(dmCount, vector<int>()); 
+    vector<vector<int>> dmToVarList(dmCount+1, vector<int>()); 
     for(int var = 1; var <= varCount; var++){
         //odd variables will go to var%10 th data site
         if(var%2){
@@ -26,11 +26,10 @@ TransactionManager initializeTM() {
         }
         //even variables will go to all data sites
         else {
-            for(int dm = 0; dm < dmCount; dm++){
+            for(int dm = 1; dm <= dmCount; dm++){
                 dmToVarList[dm].emplace_back(var);
             };
-        }
-        
+        }        
     };
 
     // TransactionManager tm(dmCount, dmToVarList);
