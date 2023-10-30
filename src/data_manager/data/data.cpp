@@ -1,8 +1,13 @@
 #include "distributedDB/data_manager/data/Data.hpp"
 
+#include <iostream>
+
 namespace distributedDB {
 
-Data::Data(int id): id(id){};
+Data::Data(int id): id(id){
+    // initialize data value at time 0
+    setDataSnapshot(0, 10*id); 
+};
 
 void Data::setDataSnapshot(int time, int value){
     //set data value at given time
