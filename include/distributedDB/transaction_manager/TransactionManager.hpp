@@ -28,6 +28,12 @@ private:
   vector<DataManager> managers = {};
   unordered_map<int, vector<Transaction>> transactions;
   int globalClock = 0;
+
+public:
+  unordered_map<int, Transaction*> commitedTransactions; // (T_id, T)
+  unordered_map<int, Transaction*> runningTransactions; // (T_id, T)
+  unordered_map<int, Transaction*> pendingTransactions; // (x_id, T) -> T waiting on x_id
+
   Graph* serializationGraph = new Graph();
 
 private:
