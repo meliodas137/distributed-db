@@ -18,11 +18,22 @@
 using namespace std;
 
 namespace distributedDB {
+
+enum OpType {
+  READ,
+  WRITE
+};
 class Operation {
 private: 
+  int data;
+  int value;
+  OpType type;
 
 public:
-  Operation();
+  Operation(int data, int value, OpType type);
+  int getValue();
+  bool isReadType();
+  bool isWriteType();
 };
 }
 #endif 
