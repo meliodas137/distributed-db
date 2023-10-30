@@ -1,6 +1,8 @@
 #include "distributedDB/transaction_manager/TransactionManager.hpp"
 #include "distributedDB/utils/utils.hpp"
 
+#include <iostream>
+
 using namespace std;
 
 namespace distributedDB {
@@ -65,7 +67,17 @@ string TransactionManager::failDataManager(int dataManagerId){
 
 string TransactionManager::dumpData(){ 
     incrementClock();
-    return "Not Implemented Error.";
+
+    for(int dm = 1; dm <= dmCount; dm++){
+        cout << "site " << dm << " -"; 
+        for(auto &id: dmToVarList[dm]){ // TODO: add commas between each dataId
+            cout << " x" << id << ": " << managers[dm].getDataSnapshot(id, globalClock);
+        };
+        cout << endl;
+    };
+
+    return "";
+
 };
 
 }

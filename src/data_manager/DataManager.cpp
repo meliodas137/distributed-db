@@ -1,5 +1,7 @@
 #include "distributedDB/data_manager/DataManager.hpp"
 
+#include <iostream>
+
 namespace distributedDB {
 
 DataManager::DataManager(vector<int> &dataitems) {
@@ -16,6 +18,7 @@ void DataManager::setDataSnapshot(int dataId, int value, int time){
 
 int DataManager::getDataSnapshot(int dataId, int time){
     //return data value at time 
+    //cout << "searching for data item" << dataId << endl;
     return dataMap[dataId]->getDataSnapshot(time);
 };
 
