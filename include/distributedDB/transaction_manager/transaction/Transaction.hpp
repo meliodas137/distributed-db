@@ -25,6 +25,9 @@ enum EdgeType{
     WRITE_WRITE
 };
 class Transaction {
+public:
+  int t_id;
+
 private: 
   int beginTime;
   int commitTime;
@@ -33,7 +36,7 @@ private:
   vector<pair<int, EdgeType>> outEdges;
 
 public:
-  Transaction(int beginTime);
+  Transaction(int t_id, int beginTime);
   void setCommitTime(int time);
   int getCommitTime();
   int getBeginTime();

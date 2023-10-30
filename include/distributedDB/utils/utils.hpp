@@ -18,9 +18,10 @@ using namespace std;
 namespace distributedDB {
 
 string findAndReplaceAll(string s, string toReplace, string replaceWith);
-bool safeTransaction(Transaction &transaction, vector<Transaction> &commitedTransactions);
-bool hasRWRWCycle(vector<Transaction> &commitedTransactions, int rootIdx);
-
+bool safeTransaction(unordered_map<int, Transaction*> &commitedTransactions, Transaction &transaction);
+bool hasRWRWCycle(unordered_map<int, Transaction*> &commitedTransactions, int t_id);
+void removeFromCommittedMap(unordered_map<int, Transaction*> &commitedTransactions, Transaction &t);
+void addInCommittedMap(unordered_map<int, Transaction*> &commitedTransactions, Transaction &t);
 }
 
 #endif 
