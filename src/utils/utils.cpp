@@ -28,18 +28,27 @@ string findAndReplaceAll(string s, string toReplace, string replaceWith){
     return s;
 }
 
-bool safeTransaction(Transaction &t, vector<Transaction> &commitedTransactions) {
+bool safeTransaction(unordered_map<int, Transaction*> &commitedTransactions, Transaction &t) {
     if(commitedTransactions.empty()) return true; // TODO: Handle proper abort checks
     return false;
 }
 
-bool hasRWRWCycle(vector<Transaction> &commitedTransactions, int rootIdx) {
+bool hasRWRWCycle(unordered_map<int, Transaction*> &commitedTransactions, int t_id) {
     // TODO: Handle proper cycle abort checks
-    if(rootIdx < 0 || rootIdx >= commitedTransactions.size()) return false;
+    if(t_id < 0) return false;
     
-
-    auto root = commitedTransactions[rootIdx];
+    auto root = commitedTransactions[t_id];
     return false;
+}
+
+void addInCommittedMap(unordered_map<int, Transaction*> &commitedTransactions, Transaction &t) {
+    commitedTransactions[t.t_id] = &t; // TODO: iterate over committed Transaction and remove it's edges
+}
+
+void removeFromCommittedMap(unordered_map<int, Transaction*> &commitedTransactions, Transaction &t) {
+    commitedTransactions.erase(t.t_id); // TODO: iterate over committed Transaction and remove it's edges
+    delete(&t);
+
 }
 
 }
