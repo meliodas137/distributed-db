@@ -40,6 +40,7 @@ string TransactionManager::endTransaction(int transactionId){
 
 string TransactionManager::readData(int transactionId, int dataId){ 
     incrementClock();
+    runningTransactions[transactionId]->addReadOperation(dataId, globalClock);
     // cout << dataId << endl;
     // cout << managers[1].getDataSnapshot(dataId, globalClock) << endl;
     return "Not Implemented Error.";
@@ -47,6 +48,7 @@ string TransactionManager::readData(int transactionId, int dataId){
 
 string TransactionManager::writeData(int transactionId, int dataId, int dataValue){
     incrementClock();
+    runningTransactions[transactionId]->addWriteOperation(dataId, dataValue, globalClock);
     //managers[1].setDataSnapshot(dataId, dataValue, globalClock);
     return "Not Implemented Error.";
 };

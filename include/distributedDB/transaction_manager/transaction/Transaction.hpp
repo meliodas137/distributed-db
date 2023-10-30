@@ -14,6 +14,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include "distributedDB/transaction_manager/operation/operation.hpp"
 
 using namespace std;
 
@@ -31,9 +32,11 @@ public:
 private: 
   int beginTime;
   int commitTime;
-  unordered_map<int, int> readSet;
-  unordered_map<int, int> writeSet;
+  unordered_map<int, int> readSet; // (time, dataId)
+  unordered_map<int, int> writeSet; // (time, dataId)
   vector<pair<int, EdgeType>> outEdges;
+  vector<Operation> readOps;
+  vector<Operation> writeOps;
 
 public:
   Transaction(int t_id, int beginTime);
@@ -43,6 +46,8 @@ public:
   bool inReadSet(int t_id);
   bool inWriteSet(int t_id);
   void addEdge(int t_id, EdgeType type);
+  void addReadOperation(int dataId, int time);
+  void addWriteOperation(int dataId, int value, int time);
   vector<pair<int, EdgeType>> getEdges();
 };
 }
