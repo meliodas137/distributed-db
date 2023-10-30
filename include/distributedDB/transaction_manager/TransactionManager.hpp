@@ -41,7 +41,7 @@ private:
 
 public:
   TransactionManager(int dmCount, vector<vector<int>> &dmToVarlist);
-  string beginTransaction(int transactionId);
+  void beginTransaction(int transactionId);
   string endTransaction(int transactionId);
   string readData(int transactionId, int dataId);
   string writeData(int transactionId, int dataId, int dataValue);

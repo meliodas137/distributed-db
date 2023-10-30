@@ -1,4 +1,5 @@
 #include "distributedDB/transaction_manager/TransactionManager.hpp"
+#include "distributedDB/utils/utils.hpp"
 
 using namespace std;
 
@@ -15,14 +16,27 @@ int TransactionManager::incrementClock() {
     return ++globalClock;
 };
 
-string TransactionManager::beginTransaction(int transactionId) {
-    incrementClock();
-    return "Not Implemented Error.";
+void TransactionManager::beginTransaction(int transactionId) {
+    runningTransactions[transactionId] = new Transaction(transactionId, incrementClock());
 };
 
 string TransactionManager::endTransaction(int transactionId){ 
-    return "Not Implemented Error.";
-    };
+    incrementClock();
+    auto &transaction = runningTransactions[transactionId];
+    runningTransactions.erase(transactionId);
+
+    if(safeTransaction(commitedTransactions, *transaction)) {
+
+        addInCommittedMap(commitedTransactions, *transaction);
+
+        if(hasRWRWCycle(commitedTransactions, transactionId)){
+            removeFromCommittedMap(commitedTransactions, *transaction);
+            return "T" + to_string(transactionId) + " aborts";
+        }
+    }
+
+    return "T" + to_string(transactionId) + " commits";
+};
 
 string TransactionManager::readData(int transactionId, int dataId){ 
     incrementClock();

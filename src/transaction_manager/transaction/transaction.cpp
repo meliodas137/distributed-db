@@ -2,7 +2,7 @@
 
 namespace distributedDB {
 
-Transaction::Transaction(int beginTime): beginTime(beginTime) {};
+Transaction::Transaction(int t_id, int beginTime): t_id(t_id), beginTime(beginTime) {};
 
 void Transaction::setCommitTime(int time) {
     commitTime = time;

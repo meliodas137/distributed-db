@@ -49,7 +49,8 @@ string runCommand(TransactionManager &tm, vector<string> &cmdArgs) {
                 throw invalid_argument(formatError);
             }
             int transactionId = stoi(cmdArgs[1]);
-            return tm.beginTransaction(transactionId);
+            tm.beginTransaction(transactionId);
+            return "begin";
         }
         else if (cmdArgs[0] == "end"){
             if(cmdArgs.size() != 2) {
