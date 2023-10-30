@@ -1,6 +1,5 @@
 #include <iostream>
 #include "distributedDB/utils/utils.hpp"
-
 using namespace std;
 
 namespace distributedDB {
@@ -28,4 +27,19 @@ string findAndReplaceAll(string s, string toReplace, string replaceWith){
     s.swap(buf);
     return s;
 }
+
+bool safeTransaction(Transaction &t, vector<Transaction> &commitedTransactions) {
+    if(commitedTransactions.empty()) return true; // TODO: Handle proper abort checks
+    return false;
+}
+
+bool hasRWRWCycle(vector<Transaction> &commitedTransactions, int rootIdx) {
+    // TODO: Handle proper cycle abort checks
+    if(rootIdx < 0 || rootIdx >= commitedTransactions.size()) return false;
+    
+
+    auto root = commitedTransactions[rootIdx];
+    return false;
+}
+
 }
