@@ -42,10 +42,24 @@ string TransactionManager::endTransaction(int transactionId){
 
 string TransactionManager::readData(int transactionId, int dataId){ 
     incrementClock();
+    
+    string returnMsg = "Transaction T" + to_string(transactionId) + " read variable x" + to_string(dataId) + " as ";
     runningTransactions[transactionId]->addReadOperation(dataId, globalClock);
     // cout << dataId << endl;
     // cout << managers[1].getDataSnapshot(dataId, globalClock) << endl;
-    return "Not Implemented Error.";
+
+    //read from a local copy if possible
+    int localVal;
+    if (runningTransactions[transactionId]->hasLocalCopy(dataId, localVal)){
+        returnMsg = returnMsg + to_string(localVal);
+    }
+    else{
+        //TODO
+        returnMsg = "Not Found Locally.";
+
+    }
+    
+    return returnMsg;
 };
 
 string TransactionManager::writeData(int transactionId, int dataId, int dataValue){

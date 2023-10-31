@@ -1,5 +1,5 @@
 #include "distributedDB/transaction_manager/transaction/Transaction.hpp"
-
+#include <iostream>
 namespace distributedDB {
 
 Transaction::Transaction(int t_id, int beginTime): t_id(t_id), beginTime(beginTime) {};
@@ -16,15 +16,15 @@ int Transaction::getBeginTime() {
     return beginTime;
 }
 
-bool Transaction::inReadSet(int t_id) {
-    if(readSet.empty() || readSet.find(t_id) == readSet.end()) {
+bool Transaction::inReadSet(int dataId) {
+    if(readSet.empty() || readSet.find(dataId) == readSet.end()) {
         return false;
     }
     return true;
 }
 
-bool Transaction::inWriteSet(int t_id) {
-    if(writeSet.empty() || writeSet.find(t_id) == writeSet.end()) {
+bool Transaction::inWriteSet(int dataId) {
+    if(writeSet.empty() || writeSet.find(dataId) == writeSet.end()) {
         return false;
     }
     return true;
@@ -54,8 +54,20 @@ void Transaction::addWriteOperation(int dataId, int value, int time){
 void Transaction::addReadOperation(int dataId, int time){
     readSet[time] = dataId;
     readOps.emplace_back(Operation(dataId, 0, OpType::READ)); 
-    //TODO: Read value from the correct data item before storing it in the op
+    // TODO: Read value from the correct data item before storing it in the op
     // Read from the writeOps value for first
 }
 
+bool Transaction::hasLocalCopy(int dataId, int &localVal){
+    // traverse in reverse order to find latest written copy
+    for( int opIdx = writeOps.size()-1; opIdx >= 0; opIdx-- ) { 
+        if( writeOps[opIdx].getDataId() == dataId ){
+            localVal = writeOps[opIdx].getValue(); //set localVal if local copy found
+            return true;
+        } 
+    }
+
+    return false;
+}
+   
 }

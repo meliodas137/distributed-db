@@ -43,11 +43,12 @@ public:
   void setCommitTime(int time);
   int getCommitTime();
   int getBeginTime();
-  bool inReadSet(int t_id);
-  bool inWriteSet(int t_id);
+  bool inReadSet(int dataId);
+  bool inWriteSet(int dataId);
   void addEdge(int t_id, EdgeType type);
   void addReadOperation(int dataId, int time);
   void addWriteOperation(int dataId, int value, int time);
+  bool hasLocalCopy(int dataId, int &localVal);
   vector<pair<int, EdgeType>> getEdges();
 };
 }

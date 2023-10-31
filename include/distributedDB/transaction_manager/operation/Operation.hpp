@@ -25,12 +25,13 @@ enum OpType {
 };
 class Operation {
 private: 
-  int data;
+  int dataId;
   int value;
   OpType type;
 
 public:
-  Operation(int data, int value, OpType type);
+  Operation(int dataId, int value, OpType type);
+  int getDataId();
   int getValue();
   bool isReadType();
   bool isWriteType();
