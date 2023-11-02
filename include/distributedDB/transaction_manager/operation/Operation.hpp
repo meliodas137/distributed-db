@@ -28,9 +28,11 @@ private:
   int dataId;
   int value;
   OpType type;
+  int managerId; //-1 means local read
 
 public:
   Operation(int dataId, int value, OpType type);
+  Operation(int dataId, int value, int dmId, OpType type);
   int getDataId();
   int getValue();
   bool isReadType();

@@ -51,9 +51,9 @@ void Transaction::addWriteOperation(int dataId, int value, int time){
     writeOps.emplace_back(Operation(dataId, value, OpType::WRITE));
 }
 
-void Transaction::addReadOperation(int dataId, int time){
+void Transaction::addReadOperation(int dataId, int dmId, int val, int time){
     readSet[time] = dataId;
-    readOps.emplace_back(Operation(dataId, 0, OpType::READ)); 
+    readOps.emplace_back(Operation(dataId, val, dmId, OpType::READ)); 
     // TODO: Read value from the correct data item before storing it in the op
     // Read from the writeOps value for first
 }

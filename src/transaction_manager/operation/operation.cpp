@@ -3,6 +3,7 @@
 namespace distributedDB {
 
 Operation::Operation(int dataId, int val, OpType type): dataId(dataId), value(val), type(type){};
+Operation::Operation(int dataId, int val, int dmId, OpType type): dataId(dataId), value(val), type(type), managerId(dmId){};
 
 int Operation::getDataId(){
     return dataId;
