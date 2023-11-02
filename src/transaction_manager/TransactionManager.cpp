@@ -51,21 +51,43 @@ string TransactionManager::readData(int transactionId, int dataId){
     incrementClock();
     
     string returnMsg = "Transaction T" + to_string(transactionId) + " read variable x" + to_string(dataId) + " as ";
-    runningTransactions[transactionId]->addReadOperation(dataId, globalClock);
+    auto &trans = runningTransactions[transactionId];
     // cout << dataId << endl;
     // cout << managers[1].getDataSnapshot(dataId, globalClock) << endl;
 
     //read from a local copy if possible
-    int localVal;
-    if (runningTransactions[transactionId]->hasLocalCopy(dataId, localVal)){
-        returnMsg = returnMsg + to_string(localVal);
-    }
-    else{
-        //TODO
-        returnMsg = "Not Found Locally.";
+    int result, dmId = -1;
+    int found = 0; // 0 means waiting 1 means item found and -1 means all sites down
 
+    if (trans->hasLocalCopy(dataId, result)){
+        found = 1;
+    }
+    else {
+        for(auto &dm: varToDmList[dataId]) {
+            // if(managers[dm].isDown()) {
+            //     continue;
+            // }
+            // found = -1;
+            if(managers[dm].canReadDataItem(dataId, trans->getBeginTime(), result)){
+                found = 1;
+                dmId = dm;
+                break;
+            }
+        }
     }
     
+    if(found) {
+        returnMsg = returnMsg + to_string(result);
+        trans->addReadOperation(dataId, dmId, result, globalClock);
+
+    } else {
+        // Wait for at least one site to be up
+        runningTransactions.erase(transactionId);
+        pendingTransactions[dataId] = trans;
+
+        returnMsg = "Waiting for the site to be up";
+    }
+
     return returnMsg;
 };
 
