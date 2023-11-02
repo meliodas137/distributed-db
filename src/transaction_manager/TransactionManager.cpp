@@ -85,7 +85,7 @@ string TransactionManager::dumpData(){
     for(int dm = 1; dm <= dmCount; dm++){
         cout << "site " << dm << " -"; 
         for(auto &id: dmToVarList[dm]){ // TODO: add commas between each dataId
-            cout << " x" << id << ": " << managers[dm].getDataSnapshot(id, globalClock);
+            cout << " x" << id << ": " << managers[dm].getDataSnapshot(id, globalClock).second;
         };
         cout << endl;
     };

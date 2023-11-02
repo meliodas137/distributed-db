@@ -23,15 +23,15 @@ namespace distributedDB {
 class Data {
 private: 
   int id;
-  vector<pair<int, int>> history;
+  vector<pair<int, int>> history = {};
 
 public:
   Data(int id);
   void setDataSnapshot(int time, int value);
-  int getDataSnapshot(int time);
+  pair<int,int> getDataSnapshot(int time);
 
 private:
-  int searchInHistory(int time);
+  pair<int,int> searchInHistory(int time);
 };
 }
 #endif 

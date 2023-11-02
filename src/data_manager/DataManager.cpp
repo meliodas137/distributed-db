@@ -16,7 +16,7 @@ void DataManager::setDataSnapshot(int dataId, int value, int time){
     dataMap[dataId]->setDataSnapshot(time, value);
 };
 
-int DataManager::getDataSnapshot(int dataId, int time){
+pair<int,int> DataManager::getDataSnapshot(int dataId, int time){
     //return data value at time 
     //cout << "searching for data item" << dataId << endl;
     return dataMap[dataId]->getDataSnapshot(time);

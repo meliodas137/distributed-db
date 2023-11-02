@@ -15,12 +15,12 @@ void Data::setDataSnapshot(int time, int value){
     history.emplace_back(data);
 };
 
-int Data::getDataSnapshot(int time){
+pair<int,int> Data::getDataSnapshot(int time){
     //return data value at time 
     return searchInHistory(time);
 };
 
-int Data::searchInHistory(int time){
+pair<int,int> Data::searchInHistory(int time){
     //apply binary search to find data at time in history
     int start = 0;
     int end = history.size()-1;
@@ -29,7 +29,7 @@ int Data::searchInHistory(int time){
     while (start <= end) {
 		if( start == end ){
             if( history[start].first <= time ){
-                return history[start].second;
+                return history[start];
             }
             break;
         }
@@ -43,8 +43,8 @@ int Data::searchInHistory(int time){
             start = mid+1;
         }
     }
-
-    return history[mid].second;
+    
+    return history[mid];
 };
 
 
