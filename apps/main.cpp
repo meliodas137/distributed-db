@@ -33,7 +33,7 @@ TransactionManager initializeTM() {
     };
 
     // TransactionManager tm(dmCount, dmToVarList);
-    return TransactionManager(dmCount, dmToVarList);
+    return TransactionManager(dmCount, varCount, dmToVarList);
 }
 
 string runCommand(TransactionManager &tm, vector<string> &cmdArgs) {

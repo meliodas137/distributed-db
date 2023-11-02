@@ -7,10 +7,17 @@ using namespace std;
 
 namespace distributedDB {
 
-TransactionManager::TransactionManager(int dmCount, vector<vector<int>> &dmToVarlist): dmCount(dmCount), dmToVarList(dmToVarlist){
+TransactionManager::TransactionManager(int dmCount, int varCount, vector<vector<int>> &dmToVarlist): dmCount(dmCount), dmToVarList(dmToVarlist){
+    varToDmList = vector<vector<int>>(varCount+1, vector<int>());
+    incrementClock();
     for(int i = 0; i <= dmCount; i++) {
         //cout<<"creating manager "<<i<<endl;
         managers.emplace_back(DataManager(dmToVarList[i]));
+
+        for(auto &var: dmToVarList[i]) {
+            // cout<<var<<endl;
+            varToDmList[var].emplace_back(i);
+        }
     }
 }
 

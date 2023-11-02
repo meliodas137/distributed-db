@@ -24,6 +24,7 @@ namespace distributedDB {
 class TransactionManager {
 private: 
   vector<vector<int>> dmToVarList = {};
+  vector<vector<int>> varToDmList = {};
   int dmCount;
   vector<DataManager> managers = {};
   unordered_map<int, vector<Transaction>> transactions;
@@ -40,7 +41,7 @@ private:
   int incrementClock();
 
 public:
-  TransactionManager(int dmCount, vector<vector<int>> &dmToVarlist);
+  TransactionManager(int dmCount, int varCount, vector<vector<int>> &dmToVarlist);
   void beginTransaction(int transactionId);
   string endTransaction(int transactionId);
   string readData(int transactionId, int dataId);
