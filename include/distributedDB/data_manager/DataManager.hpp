@@ -30,6 +30,7 @@ public:
     DataManager(vector<int> &dataItems);
     void setDataSnapshot(int time, int value, int dataId);
     pair<int,int> getDataSnapshot(int time, int dataId);
+    bool canReadDataItem(int dataId, int beginTime, int &result);
     void upStatus(int upTime);
     void downStatus(int downTime);
     bool isDown();

@@ -26,6 +26,25 @@ bool DataManager::isDown() {
     return status == Status::Down;
 }
 
+bool DataManager::canReadDataItem(int dataId, int beginTime, int &result){
+    if(isDown()) return false;
+    pair<int,int> data = getDataSnapshot(dataId, beginTime);
+    
+    if(upHistory.empty() || (lastUpTime <= beginTime && lastUpTime <= data.first)) {
+        result = data.second;
+        return true;
+    }
+
+    for(auto &up: upHistory) {
+        if(up.first <= data.first && up.second >= data.first 
+            && up.first <= beginTime && up.second >= beginTime) {
+            result = data.second;
+            return true;
+        }
+    }
+// TODO Add additional check for unique data items
+    return false;
+};
 
 void DataManager::upStatus(int upTime){
     if(status == Status::Down) {
