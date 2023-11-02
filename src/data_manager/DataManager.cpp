@@ -22,4 +22,23 @@ pair<int,int> DataManager::getDataSnapshot(int dataId, int time){
     return dataMap[dataId]->getDataSnapshot(time);
 };
 
+bool DataManager::isDown() {
+    return status == Status::Down;
+}
+
+
+void DataManager::upStatus(int upTime){
+    if(status == Status::Down) {
+        lastUpTime = upTime;
+    }
+    status = Status::Up;
+};
+
+void DataManager::downStatus(int downTime){
+    if(status == Status::Up) {
+        upHistory.emplace_back(make_pair(lastUpTime, downTime));
+    }
+    status = Status::Down;
+};
+
 }
