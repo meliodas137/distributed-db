@@ -100,12 +100,20 @@ string TransactionManager::writeData(int transactionId, int dataId, int dataValu
 
 string TransactionManager::recoverDataManager(int dataManagerId){ 
     incrementClock();
-    return "Not Implemented Error.";
+    if(!managers[dataManagerId].isDown()){
+        return "Site " + to_string(dataManagerId) + " is already up.";
+    }
+    managers[dataManagerId].upStatus(globalClock);
+    return "Site " + to_string(dataManagerId) + " has recovered.";
 };
 
 string TransactionManager::failDataManager(int dataManagerId){ 
     incrementClock();
-    return "Not Implemented Error.";
+    if(managers[dataManagerId].isDown()){
+        return "Site " + to_string(dataManagerId) + " is already down.";
+    }
+    managers[dataManagerId].downStatus(globalClock);
+    return "Site " + to_string(dataManagerId) + " has went down.";
 };
 
 string TransactionManager::dumpData(){ 
