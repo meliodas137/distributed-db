@@ -24,7 +24,7 @@ private:
     unordered_map<int, Data*> dataMap;
     Status status = Status::Up;
     vector<pair<int,int>> upHistory = {};
-    int lastUpTime = 1;
+    int lastUpTime = 0;
 
 public:
     DataManager(vector<int> &dataItems);

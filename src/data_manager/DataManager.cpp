@@ -27,23 +27,18 @@ bool DataManager::isDown() {
 }
 
 bool DataManager::canReadDataItem(int dataId, int beginTime, int &result){
-    if(isDown()) return false;
+    //if(isDown()) return false;
     pair<int,int> data = getDataSnapshot(dataId, beginTime);
     
-    if(upHistory.empty() || (lastUpTime <= beginTime && lastUpTime <= data.first)) {
-        result = data.second;
-        return true;
-    }
-
     for(auto &up: upHistory) {
-        if(up.first <= data.first && up.second >= data.first 
-            && up.first <= beginTime && up.second >= beginTime) {
-            result = data.second;
-            return true;
+        if(up.second >= data.first && up.second < beginTime) { 
+            // if site went down between data commit and transaction begin time
+            return false;
         }
     }
-// TODO Add additional check for unique data items
-    return false;
+    // TODO Add additional check for unique data items
+    result = data.second;
+    return true;
 };
 
 void DataManager::upStatus(int upTime){
