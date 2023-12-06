@@ -4,7 +4,7 @@
 
 namespace distributedDB {
 
-Data::Data(int id): id(id){
+Data::Data(int id, bool isUnique): id(id), isUniqueToDm(isUnique){
     // initialize data value at time 0
     setDataSnapshot(0, 10*id); 
 };

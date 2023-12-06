@@ -23,7 +23,7 @@ using namespace std;
 namespace distributedDB {
 class TransactionManager {
 private: 
-  vector<vector<int>> dmToVarList = {};
+  vector<vector<pair<int, bool>>> dmToVarList = {};
   vector<vector<int>> varToDmList = {};
   int dmCount;
   vector<DataManager> managers = {};
@@ -42,7 +42,7 @@ private:
   void commitTransaction(Transaction &transaction);
 
 public:
-  TransactionManager(int dmCount, int varCount, vector<vector<int>> &dmToVarlist);
+  TransactionManager(int dmCount, int varCount, vector<vector<pair<int, bool>>> &dmToVarlist);
   void beginTransaction(int transactionId);
   string endTransaction(int transactionId);
   string readData(int transactionId, int dataId);

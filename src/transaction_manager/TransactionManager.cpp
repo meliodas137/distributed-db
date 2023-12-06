@@ -7,7 +7,7 @@ using namespace std;
 
 namespace distributedDB {
 
-TransactionManager::TransactionManager(int dmCount, int varCount, vector<vector<int>> &dmToVarlist): dmCount(dmCount), dmToVarList(dmToVarlist){
+TransactionManager::TransactionManager(int dmCount, int varCount, vector<vector<pair<int, bool>>> &dmToVarlist): dmCount(dmCount), dmToVarList(dmToVarlist){
     varToDmList = vector<vector<int>>(varCount+1, vector<int>());
     incrementClock();
     for(int i = 0; i <= dmCount; i++) {
@@ -16,7 +16,7 @@ TransactionManager::TransactionManager(int dmCount, int varCount, vector<vector<
 
         for(auto &var: dmToVarList[i]) {
             // cout<<var<<endl;
-            varToDmList[var].emplace_back(i);
+            varToDmList[var.first].emplace_back(i);
         }
     }
 }
@@ -150,8 +150,8 @@ string TransactionManager::dumpData(){
 
     for(int dm = 1; dm <= dmCount; dm++){
         cout << "site " << dm << " -"; 
-        for(auto &id: dmToVarList[dm]){ // TODO: add commas between each dataId
-            cout << " x" << id << ": " << managers[dm].getDataSnapshot(id, globalClock).second;
+        for(auto &var: dmToVarList[dm]){ // TODO: add commas between each dataId
+            cout << " x" << var.first << ": " << managers[dm].getDataSnapshot(var.first, globalClock).second;
         };
         cout << endl;
     };

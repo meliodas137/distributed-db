@@ -17,17 +17,17 @@ TransactionManager initializeTM() {
     int dmCount = 10;
     int varCount = 20;
 
-    vector<vector<int>> dmToVarList(dmCount+1, vector<int>()); 
+    vector<vector<pair<int, bool>>> dmToVarList(dmCount+1, vector<pair<int, bool>>()); 
     for(int var = 1; var <= varCount; var++){
         //odd variables will go to var%10 th data site
         if(var%2){
             int dm = var%10;
-            dmToVarList[dm].emplace_back(var);
+            dmToVarList[dm].emplace_back(make_pair(var, true));
         }
         //even variables will go to all data sites
         else {
             for(int dm = 1; dm <= dmCount; dm++){
-                dmToVarList[dm].emplace_back(var);
+                dmToVarList[dm].emplace_back(make_pair(var, false));
             };
         }        
     };

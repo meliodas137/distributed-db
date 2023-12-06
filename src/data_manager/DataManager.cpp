@@ -4,9 +4,9 @@
 
 namespace distributedDB {
 
-DataManager::DataManager(vector<int> &dataitems) {
+DataManager::DataManager(vector<pair<int, bool>> &dataitems) {
     for(auto &item: dataitems) {
-        dataMap[item] = new Data(item);
+        dataMap[item.first] = new Data(item.first, item.second);
        // cout<<"adding data item "<<item<<endl;
     }
 };
@@ -30,13 +30,15 @@ bool DataManager::canReadDataItem(int dataId, int beginTime, int &result){
     //if(isDown()) return false;
     pair<int,int> data = getDataSnapshot(dataId, beginTime);
     
-    for(auto &up: upHistory) {
-        if(up.second >= data.first && up.second < beginTime) { 
-            // if site went down between data commit and transaction begin time
-            return false;
+    if(!dataMap[dataId]->isUniqueToDm){ //if data item is unique, we can always read
+        for(auto &up: upHistory) {
+            if(up.second >= data.first && up.second < beginTime) { 
+                // if site went down between data commit and transaction begin time
+                return false;
+            }
         }
     }
-    // TODO Add additional check for unique data items
+
     result = data.second;
     return true;
 };

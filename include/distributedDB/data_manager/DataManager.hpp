@@ -27,7 +27,7 @@ private:
     int lastUpTime = 0;
 
 public:
-    DataManager(vector<int> &dataItems);
+    DataManager(vector<pair<int, bool>> &dataItems);
     void setDataSnapshot(int time, int value, int dataId);
     pair<int,int> getDataSnapshot(int time, int dataId);
     bool canReadDataItem(int dataId, int beginTime, int &result);
