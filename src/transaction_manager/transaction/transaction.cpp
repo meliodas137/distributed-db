@@ -73,5 +73,13 @@ bool Transaction::hasLocalCopy(int dataId, int &localVal){
 vector<Operation> Transaction::getAllWriteOperations(){
     return writeOps;
 }
+
+vector<int> Transaction::getPendingOperation(){
+    return pendingOperation;
+}
    
+void Transaction::setPendingOperation(vector<int> op){
+    pendingOperation = op;
+}
+
 }

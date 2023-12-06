@@ -15,8 +15,9 @@
 #include <string>
 #include <unordered_map>
 #include "distributedDB/data_manager/DataManager.hpp"
-#include "distributedDB/transaction_manager/graph/Graph.hpp"
+//#include "distributedDB/transaction_manager/graph/Graph.hpp"
 #include "distributedDB/transaction_manager/transaction/Transaction.hpp"
+#include "distributedDB/transaction_manager/operation/operation.hpp"
 
 using namespace std;
 
@@ -39,6 +40,7 @@ public:
 
 private:
   int incrementClock();
+  int decrementClock();
   void commitTransaction(Transaction &transaction);
 
 public:

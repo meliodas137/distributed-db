@@ -25,6 +25,10 @@ int TransactionManager::incrementClock() {
     return ++globalClock;
 };
 
+int TransactionManager::decrementClock() {
+    return --globalClock;
+};
+
 void TransactionManager::beginTransaction(int transactionId) {
     runningTransactions[transactionId] = new Transaction(transactionId, incrementClock());
 };
@@ -102,6 +106,8 @@ string TransactionManager::readData(int transactionId, int dataId){
     } else if (!canReadFrom.empty()){
         // Wait for at least one site to be up
         runningTransactions.erase(transactionId);
+
+        trans->setPendingOperation({OpType::READ, dataId});
         pendingTransactions[dataId].emplace_back(trans);
 
         returnMsg = "Waiting for the site to be up";
@@ -121,18 +127,43 @@ string TransactionManager::writeData(int transactionId, int dataId, int dataValu
     if (runningTransactions.find(transactionId) == runningTransactions.end()){
         return "Given transaction is currently not running.";
     }
+
+    //TODO track which sites does t writes to, add to pending if needed
+
     runningTransactions[transactionId]->addWriteOperation(dataId, dataValue, globalClock);
-    //managers[1].setDataSnapshot(dataId, dataValue, globalClock);
+
     return "Not Implemented Error.";
 };
 
 string TransactionManager::recoverDataManager(int dataManagerId){ 
     incrementClock();
+
     if(!managers[dataManagerId].isDown()){
         return "Site " + to_string(dataManagerId) + " is already up.";
     }
     managers[dataManagerId].upStatus(globalClock);
-    //TODO run any pending transactions that depend on current site, and move it to running transactions if unblocked
+
+    //run any pending transactions that depend on data items of the current site
+    for(auto &var: dmToVarList[dataManagerId]){
+        auto &dataId = var.first;
+        while (!pendingTransactions[dataId].empty()){
+            auto &trans = pendingTransactions[dataId].back();
+            pendingTransactions[dataId].pop_back(); //remove from pending
+            runningTransactions[trans->t_id] = trans; //add to running
+
+            decrementClock();  // to avoid multiple increments
+            
+            //run the pending operation
+            auto op = trans->getPendingOperation();
+            if(op[0] == OpType::READ){
+                cout << readData(trans->t_id, op[1]) << endl;
+            }
+            else{
+                cout << writeData(trans->t_id, op[1], op[2]) << endl;
+            }
+        }
+
+    }
     return "Site " + to_string(dataManagerId) + " has recovered and all possible pending operations have completed.";
 };
 
@@ -150,8 +181,8 @@ string TransactionManager::dumpData(){
 
     for(int dm = 1; dm <= dmCount; dm++){
         cout << "site " << dm << " -"; 
-        for(auto &var: dmToVarList[dm]){ // TODO: add commas between each dataId
-            cout << " x" << var.first << ": " << managers[dm].getDataSnapshot(var.first, globalClock).second;
+        for(auto &var: dmToVarList[dm]){
+            cout << " x" << var.first << ": " << managers[dm].getDataSnapshot(var.first, globalClock).second << ",";
         };
         cout << endl;
     };

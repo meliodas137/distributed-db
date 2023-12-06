@@ -32,6 +32,7 @@ public:
 private: 
   int beginTime;
   int commitTime;
+  vector<int> pendingOperation;
   unordered_map<int, int> readSet; // (time, dataId)
   unordered_map<int, int> writeSet; // (time, dataId)
   vector<pair<int, EdgeType>> outEdges;
@@ -51,6 +52,8 @@ public:
   bool hasLocalCopy(int dataId, int &localVal);
   vector<Operation> getAllWriteOperations();
   vector<pair<int, EdgeType>> getEdges();
+  vector<int> getPendingOperation();
+  void setPendingOperation(vector<int>);
 };
 }
 #endif 
