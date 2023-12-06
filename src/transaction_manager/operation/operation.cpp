@@ -3,7 +3,8 @@
 namespace distributedDB {
 
 Operation::Operation(int dataId, int val, OpType type): dataId(dataId), value(val), type(type){};
-Operation::Operation(int dataId, int val, int dmId, OpType type): dataId(dataId), value(val), type(type), managerId(dmId){};
+Operation::Operation(int dataId, int val, int readManagerId, OpType type): dataId(dataId), value(val), type(type), readManagerId(readManagerId){};
+Operation::Operation(int dataId, int val, vector<int> writeManagerIds, OpType type): dataId(dataId), value(val), type(type), writeManagerIds(writeManagerIds){};
 
 int Operation::getDataId(){
     return dataId;
@@ -11,6 +12,10 @@ int Operation::getDataId(){
 
 int Operation::getValue(){
     return value;
+}
+
+vector<int> Operation::getWriteManagerIds(){
+    return writeManagerIds;
 }
 
 bool Operation::isReadType(){

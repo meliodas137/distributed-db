@@ -58,7 +58,7 @@ void TransactionManager::commitTransaction(Transaction &transaction){
     for(auto op: transaction.getAllWriteOperations()){
         auto dataId = op.getDataId();
         auto dataVal = op.getValue();
-        for(auto &dm: varToDmList[dataId]){
+        for(auto &dm: op.getWriteManagerIds()){
             if(!managers[dm].isDown()){
                 managers[dm].setDataSnapshot(dataId, dataVal, globalClock);
             }
@@ -110,7 +110,7 @@ string TransactionManager::readData(int transactionId, int dataId){
         trans->setPendingOperation({OpType::READ, dataId});
         pendingTransactions[dataId].emplace_back(trans);
 
-        returnMsg = "Waiting for the site to be up";
+        returnMsg = "Waiting for any relevant site to be up";
     }
     else{
         //abort transaction
@@ -128,11 +128,34 @@ string TransactionManager::writeData(int transactionId, int dataId, int dataValu
         return "Given transaction is currently not running.";
     }
 
-    //TODO track which sites does t writes to, add to pending if needed
+    auto &trans = runningTransactions[transactionId];
+    string returnMsg = "Transaction T" + to_string(transactionId) + " wrote variable x" + to_string(dataId) + " to sites: ";
 
-    runningTransactions[transactionId]->addWriteOperation(dataId, dataValue, globalClock);
+    // track which sites does t writes to, add to pending if no sites are up
+    vector<int> writesTo = {};
+    for(auto &dm: varToDmList[dataId]) {
+        if(!managers[dm].isDown()){
+            writesTo.emplace_back(dm);
+        }
+    }
 
-    return "Not Implemented Error.";
+    if(writesTo.empty()){
+        //add to pending operations
+        runningTransactions.erase(transactionId);
+
+        trans->setPendingOperation({OpType::WRITE, dataId, dataValue});
+        pendingTransactions[dataId].emplace_back(trans);
+
+        returnMsg = "Waiting for any relevant site to be up.";
+    }
+    else{
+        runningTransactions[transactionId]->addWriteOperation(dataId, writesTo, dataValue, globalClock);
+        for(int dm: writesTo){
+            returnMsg = returnMsg + to_string(dm) + " ";
+        }
+    }
+
+    return returnMsg;
 };
 
 string TransactionManager::recoverDataManager(int dataManagerId){ 

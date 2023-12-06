@@ -46,9 +46,9 @@ vector<pair<int, EdgeType>> Transaction::getEdges(){
     return outEdges;
 }
 
-void Transaction::addWriteOperation(int dataId, int value, int time){
+void Transaction::addWriteOperation(int dataId, vector<int> dmIds, int value, int time){
     writeSet[time] = dataId;
-    writeOps.emplace_back(Operation(dataId, value, OpType::WRITE));
+    writeOps.emplace_back(Operation(dataId, value, dmIds, OpType::WRITE));
 }
 
 void Transaction::addReadOperation(int dataId, int dmId, int val, int time){

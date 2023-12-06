@@ -28,13 +28,16 @@ private:
   int dataId;
   int value;
   OpType type;
-  int managerId; //-1 means local read
+  int readManagerId; //-1 means local read
+  vector<int> writeManagerIds;
 
 public:
   Operation(int dataId, int value, OpType type);
-  Operation(int dataId, int value, int dmId, OpType type);
+  Operation(int dataId, int value, int readManagerId, OpType type);
+  Operation(int dataId, int value, vector<int> writeManagerIds, OpType type);
   int getDataId();
   int getValue();
+  vector<int> getWriteManagerIds();
   bool isReadType();
   bool isWriteType();
 };
