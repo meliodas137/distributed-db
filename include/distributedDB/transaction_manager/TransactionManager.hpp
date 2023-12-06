@@ -33,12 +33,13 @@ private:
 public:
   unordered_map<int, Transaction*> commitedTransactions; // (T_id, T)
   unordered_map<int, Transaction*> runningTransactions; // (T_id, T)
-  unordered_map<int, Transaction*> pendingTransactions; // (x_id, T) -> T waiting on x_id
+  unordered_map<int, vector<Transaction*>> pendingTransactions; // (x_id, [T1, T2]) -> T1 and T2 waiting on x_id
 
-  Graph* serializationGraph = new Graph();
+  //Graph* serializationGraph = new Graph();
 
 private:
   int incrementClock();
+  void commitTransaction(Transaction &transaction);
 
 public:
   TransactionManager(int dmCount, int varCount, vector<vector<int>> &dmToVarlist);

@@ -49,6 +49,7 @@ public:
   void addReadOperation(int dataId, int dmId, int val, int time);
   void addWriteOperation(int dataId, int value, int time);
   bool hasLocalCopy(int dataId, int &localVal);
+  vector<Operation> getAllWriteOperations();
   vector<pair<int, EdgeType>> getEdges();
 };
 }

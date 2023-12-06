@@ -69,5 +69,9 @@ bool Transaction::hasLocalCopy(int dataId, int &localVal){
 
     return false;
 }
+
+vector<Operation> Transaction::getAllWriteOperations(){
+    return writeOps;
+}
    
 }

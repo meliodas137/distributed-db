@@ -34,7 +34,7 @@ string TransactionManager::endTransaction(int transactionId){
     auto &transaction = runningTransactions[transactionId];
     runningTransactions.erase(transactionId);
     
-    //abort conditions: first committer wins, rwrw edges, if t writes to any site s and s fails before t commits
+    //TODO abort conditions: first committer wins, rwrw edges, if t writes to any site s and s fails before t commits
 
     if(safeTransaction(commitedTransactions, *transaction)) {
 
@@ -45,9 +45,23 @@ string TransactionManager::endTransaction(int transactionId){
             return "T" + to_string(transactionId) + " aborts";
         }
     }
-
+    commitTransaction(*transaction);
     return "T" + to_string(transactionId) + " commits";
 };
+
+void TransactionManager::commitTransaction(Transaction &transaction){ 
+    //do the actual commit  
+    for(auto op: transaction.getAllWriteOperations()){
+        auto dataId = op.getDataId();
+        auto dataVal = op.getValue();
+        for(auto &dm: varToDmList[dataId]){
+            if(!managers[dm].isDown()){
+                managers[dm].setDataSnapshot(dataId, dataVal, globalClock);
+            }
+        }
+    }
+    
+}
 
 string TransactionManager::readData(int transactionId, int dataId){ 
     incrementClock();
@@ -58,26 +72,25 @@ string TransactionManager::readData(int transactionId, int dataId){
     
     string returnMsg = "Transaction T" + to_string(transactionId) + " read variable x" + to_string(dataId) + " as ";
     auto &trans = runningTransactions[transactionId];
-    // cout << dataId << endl;
-    // cout << managers[1].getDataSnapshot(dataId, globalClock) << endl;
 
-    //read from a local copy if possible
     int result, dmId = -1;
     int found = 0; // 0 means waiting 1 means item found and -1 means all sites down
+    vector<int> canReadFrom = {}; //empty means that data can't be read from any site, hence transaction should abort
 
+    //read from a local copy if possible
     if (trans->hasLocalCopy(dataId, result)){
         found = 1;
     }
     else {
         for(auto &dm: varToDmList[dataId]) {
-            // if(managers[dm].isDown()) {
-            //     continue;
-            // }
-            // found = -1;
             if(managers[dm].canReadDataItem(dataId, trans->getBeginTime(), result)){
-                found = 1;
-                dmId = dm;
-                break;
+                canReadFrom.emplace_back(dm);
+                if(!managers[dm].isDown()){
+                    found = 1;
+                    dmId = dm;
+                    break;
+                }
+                
             }
         }
     }
@@ -86,12 +99,17 @@ string TransactionManager::readData(int transactionId, int dataId){
         returnMsg = returnMsg + to_string(result);
         trans->addReadOperation(dataId, dmId, result, globalClock);
 
-    } else {
+    } else if (!canReadFrom.empty()){
         // Wait for at least one site to be up
         runningTransactions.erase(transactionId);
-        pendingTransactions[dataId] = trans;
+        pendingTransactions[dataId].emplace_back(trans);
 
         returnMsg = "Waiting for the site to be up";
+    }
+    else{
+        //abort transaction
+        runningTransactions.erase(transactionId);
+        returnMsg = "T" + to_string(transactionId) + " aborts.";
     }
 
     return returnMsg;
@@ -114,8 +132,8 @@ string TransactionManager::recoverDataManager(int dataManagerId){
         return "Site " + to_string(dataManagerId) + " is already up.";
     }
     managers[dataManagerId].upStatus(globalClock);
-    //TODO run any pending transactions that depend on current site, and move it to runningtransaction if unblocked
-    return "Site " + to_string(dataManagerId) + " has recovered and all passible pending operations have completed.";
+    //TODO run any pending transactions that depend on current site, and move it to running transactions if unblocked
+    return "Site " + to_string(dataManagerId) + " has recovered and all possible pending operations have completed.";
 };
 
 string TransactionManager::failDataManager(int dataManagerId){ 
