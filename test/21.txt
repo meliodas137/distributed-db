@@ -1,0 +1,8 @@
+begin(T1)
+begin(T2)
+R(T1, x2)
+R(T2, x4)
+W(T1, x4, 30)
+W(T2, x2, 90)
+end(T1)
+end(T2)
