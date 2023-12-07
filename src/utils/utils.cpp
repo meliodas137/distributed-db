@@ -1,5 +1,6 @@
 #include <iostream>
 #include "distributedDB/utils/utils.hpp"
+#include "distributedDB/data_manager/DataManager.hpp"
 using namespace std;
 
 namespace distributedDB {
@@ -28,9 +29,31 @@ string findAndReplaceAll(string s, string toReplace, string replaceWith){
     return s;
 }
 
-bool safeTransaction(unordered_map<int, Transaction*> &commitedTransactions, Transaction &t) {
-    if(commitedTransactions.empty()) return true; // TODO: Handle proper abort checks
-    return false;
+bool safeTransaction(unordered_map<int, Transaction*> &commitedTransactions, Transaction &t, vector<DataManager> &managers) {
+    if(commitedTransactions.empty()) return true; 
+    
+    // Checking if anyone of the sites are up after the write and before the commit
+    for(auto &op: t.getAllWriteOperations()) {
+        for(auto &id: op.getWriteManagerIds()) {
+            if(!managers[id].siteUpSince(t.getWriteTime(op.getDataId()))) {
+                return false;
+            } 
+        }
+    }
+
+    // Checking if any transaction committed before this transaction and wrote on same site id
+    for(auto &p: commitedTransactions) {
+        auto trans = p.second;
+        if(trans->getCommitTime() >= t.getBeginTime()) {
+            for(auto &op: trans->getAllWriteOperations()) {
+                if(t.getWriteTime(op.getDataId()) != -1) {
+                    return false;
+                }
+            }
+        }
+    }
+    
+    return true;
 }
 
 bool hasRWRWCycle(unordered_map<int, Transaction*> &commitedTransactions, int t_id) {

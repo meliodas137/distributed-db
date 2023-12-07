@@ -40,7 +40,7 @@ string TransactionManager::endTransaction(int transactionId){
     
     //TODO abort conditions: first committer wins, rwrw edges, if t writes to any site s and s fails before t commits
 
-    if(safeTransaction(commitedTransactions, *transaction)) {
+    if(safeTransaction(commitedTransactions, *transaction, managers)) {
 
         addInCommittedMap(commitedTransactions, *transaction);
 
