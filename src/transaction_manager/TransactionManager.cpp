@@ -29,8 +29,9 @@ int TransactionManager::decrementClock() {
     return --globalClock;
 };
 
-void TransactionManager::beginTransaction(int transactionId) {
+string TransactionManager::beginTransaction(int transactionId) {
     runningTransactions[transactionId] = new Transaction(transactionId, incrementClock());
+    return "T" + to_string(transactionId) + " begins.";
 };
 
 string TransactionManager::endTransaction(int transactionId){ 
@@ -48,7 +49,7 @@ string TransactionManager::endTransaction(int transactionId){
         if(hasRWRWCycle(commitedTransactions, transactionId)){
 
             removeFromCommittedMap(commitedTransactions, *transaction);
-            return "T" + to_string(transactionId) + " aborts";
+            return "T" + to_string(transactionId) + " aborts due to RWRW cycle.";
         }
     }
     else{
@@ -57,7 +58,7 @@ string TransactionManager::endTransaction(int transactionId){
 
     commitTransaction(*transaction);
 
-    return "T" + to_string(transactionId) + " commits";
+    return "T" + to_string(transactionId) + " commits.";
 };
 
 void TransactionManager::commitTransaction(Transaction &transaction){ 
@@ -119,7 +120,7 @@ string TransactionManager::readData(int transactionId, int dataId){
         trans->setPendingOperation({OpType::READ, dataId});
         pendingTransactions[dataId].emplace_back(trans);
 
-        returnMsg = "Waiting for any relevant site to be up";
+        returnMsg = "Waiting for any relevant site to be up.";
     }
     else{
         //abort transaction
@@ -138,7 +139,7 @@ string TransactionManager::writeData(int transactionId, int dataId, int dataValu
     }
 
     auto &trans = runningTransactions[transactionId];
-    string returnMsg = "Transaction T" + to_string(transactionId) + " wrote variable x" + to_string(dataId) + " to sites: ";
+    string returnMsg = "Transaction T" + to_string(transactionId) + " wrote local copies of variable x" + to_string(dataId) + " to sites: ";
 
     // track which sites does t writes to, add to pending if no sites are up
     vector<int> writesTo = {};
@@ -207,7 +208,7 @@ string TransactionManager::failDataManager(int dataManagerId){
         return "Site " + to_string(dataManagerId) + " is already down.";
     }
     managers[dataManagerId].downStatus(globalClock);
-    return "Site " + to_string(dataManagerId) + " has went down.";
+    return "Site " + to_string(dataManagerId) + " has failed.";
 };
 
 string TransactionManager::dumpData(){ 
