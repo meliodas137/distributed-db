@@ -39,7 +39,7 @@ string TransactionManager::endTransaction(int transactionId){
     runningTransactions.erase(transactionId);
     transaction->setCommitTime(globalClock);
     
-    //TODO abort conditions: first committer wins, rwrw edges, if t writes to any site s and s fails before t commits
+    //abort conditions: first committer wins, rwrw edges, if t writes to any site s and s fails before t commits
 
     if(safeTransaction(commitedTransactions, *transaction, managers)) {
 
@@ -49,6 +49,9 @@ string TransactionManager::endTransaction(int transactionId){
             removeFromCommittedMap(commitedTransactions, *transaction);
             return "T" + to_string(transactionId) + " aborts";
         }
+    }
+    else{
+        return "T" + to_string(transactionId) + " aborts";
     }
     commitTransaction(*transaction);
     return "T" + to_string(transactionId) + " commits";

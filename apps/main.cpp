@@ -21,7 +21,7 @@ TransactionManager initializeTM() {
     for(int var = 1; var <= varCount; var++){
         //odd variables will go to var%10 th data site
         if(var%2){
-            int dm = var%10;
+            int dm = var%10 + 1;
             dmToVarList[dm].emplace_back(make_pair(var, true));
         }
         //even variables will go to all data sites

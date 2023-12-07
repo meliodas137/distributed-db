@@ -62,19 +62,22 @@ bool dfs(unordered_map<int, Transaction*> &commitedTransactions, int t_id, unord
         consecutiveRWRW = false;
     }
     for(auto &edge:commitedTransactions[t_id]->getEdges()) {
-        if(reached[edge.first]) {
-            if(consecutiveRWRW) return consecutiveRWRW;
-            else continue;
-        }
         if(edge.second == READ_WRITE) {
             rwcount++;
         } else if(rwcount < 2) {
             rwcount = 0;
         }
+
+        if(reached[edge.first]) {
+            if(consecutiveRWRW || rwcount >= 2) return true;
+            else continue;
+        }
         reached[edge.first] = 1;
+
         if(dfs(commitedTransactions, edge.first, reached, rwcount)){
             return true;
         }
+
         reached[edge.first] = 0;
         if(edge.second == READ_WRITE) {
             rwcount--;
@@ -84,6 +87,8 @@ bool dfs(unordered_map<int, Transaction*> &commitedTransactions, int t_id, unord
 }
 
 bool hasRWRWCycle(unordered_map<int, Transaction*> &commitedTransactions, int t_id) {
+    //cout << "checking rwrw cycle" <<endl;
+
     if(t_id < 0) return false;
     
     auto root = commitedTransactions[t_id];
@@ -116,15 +121,18 @@ bool hasRWRWCycle(unordered_map<int, Transaction*> &commitedTransactions, int t_
 
 void addInCommittedMap(unordered_map<int, Transaction*> &commitedTransactions, Transaction &t) {
     // iterate over committed Transaction to identify and add rw, ww and wr edges
+    //cout << "adding in commited map" <<endl;
     for(auto trans: commitedTransactions){
         for(auto &read: t.getReadSet()){
             if(trans.second -> getWriteTime(read.second) != -1){ //t reads trans writes
                 if(trans.second->getCommitTime() < t.getBeginTime()){ 
                     // trans commits before t begins, add edge trans --wr--> t
+                    //cout << "trans --wr--> t" <<endl;
                     trans.second->addEdge(t.t_id, EdgeType::WRITE_READ);
                 }
                 else{
                     // trans commits after t begins, add edge t --rw--> trans
+                    //cout << "t --rw--> trans" <<endl;
                     t.addEdge(trans.second->t_id, EdgeType::READ_WRITE);
                 }
             }
@@ -133,13 +141,15 @@ void addInCommittedMap(unordered_map<int, Transaction*> &commitedTransactions, T
         for(auto &read: t.getWriteSet()){
             if(trans.second -> getReadTime(read.second) != -1){ //t writes trans reads
                 // t always commits after trans begins, add edge trans --rw--> t
-                trans.second->addEdge(t.t_id, EdgeType::WRITE_READ);               
+                //cout << "trans --rw--> t" <<endl;
+                trans.second->addEdge(t.t_id, EdgeType::READ_WRITE);               
             }
         }
 
         for(auto &read: t.getWriteSet()){
             if(trans.second -> getWriteTime(read.second) != -1){ //t writes trans writes
                 // t always commits after trans commits, add edge trans --ww--> t
+                //cout << "trans --ww--> t" <<endl;
                 trans.second->addEdge(t.t_id, EdgeType::WRITE_WRITE);
             }
         }
