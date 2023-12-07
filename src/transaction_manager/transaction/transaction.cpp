@@ -16,20 +16,6 @@ int Transaction::getBeginTime() {
     return beginTime;
 }
 
-bool Transaction::inReadSet(int dataId) {
-    if(readSet.empty() || readSet.find(dataId) == readSet.end()) {
-        return false;
-    }
-    return true;
-}
-
-bool Transaction::inWriteSet(int dataId) {
-    if(writeSet.empty() || writeSet.find(dataId) == writeSet.end()) {
-        return false;
-    }
-    return true;
-}
-
 void Transaction::addEdge(int t_id, EdgeType type){
 
     for(auto &edge: outEdges) {
@@ -80,6 +66,23 @@ vector<int> Transaction::getPendingOperation(){
    
 void Transaction::setPendingOperation(vector<int> op){
     pendingOperation = op;
+}
+
+int Transaction::getWriteTime(int op_id){
+    for(auto &p: writeSet) {
+        if(op_id == p.second) {
+            return p.first;
+        }
+    }
+    return -1;
+}
+int Transaction::getReadTime(int op_id){
+    for(auto &p: readSet) {
+        if(op_id == p.second) {
+            return p.first;
+        }
+    }
+    return -1;
 }
 
 }

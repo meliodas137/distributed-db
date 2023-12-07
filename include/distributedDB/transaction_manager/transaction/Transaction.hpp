@@ -44,8 +44,6 @@ public:
   void setCommitTime(int time);
   int getCommitTime();
   int getBeginTime();
-  bool inReadSet(int dataId);
-  bool inWriteSet(int dataId);
   void addEdge(int t_id, EdgeType type);
   void addReadOperation(int dataId, int dmId, int val, int time);
   void addWriteOperation(int dataId, vector<int> dmIds, int value, int time);
