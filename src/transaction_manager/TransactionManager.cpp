@@ -35,17 +35,18 @@ void TransactionManager::beginTransaction(int transactionId) {
 
 string TransactionManager::endTransaction(int transactionId){ 
     incrementClock();
-    auto &transaction = runningTransactions[transactionId];
+    auto transaction = runningTransactions[transactionId];
     runningTransactions.erase(transactionId);
+
     transaction->setCommitTime(globalClock);
     
     //abort conditions: first committer wins, rwrw edges, if t writes to any site s and s fails before t commits
-
     if(safeTransaction(commitedTransactions, *transaction, managers)) {
 
         addInCommittedMap(commitedTransactions, *transaction);
 
         if(hasRWRWCycle(commitedTransactions, transactionId)){
+
             removeFromCommittedMap(commitedTransactions, *transaction);
             return "T" + to_string(transactionId) + " aborts";
         }
@@ -53,15 +54,17 @@ string TransactionManager::endTransaction(int transactionId){
     else{
         return "T" + to_string(transactionId) + " aborts";
     }
+
     commitTransaction(*transaction);
+
     return "T" + to_string(transactionId) + " commits";
 };
 
 void TransactionManager::commitTransaction(Transaction &transaction){ 
     //do the actual commit  
-    for(auto op: transaction.getAllWriteOperations()){
-        auto dataId = op.getDataId();
-        auto dataVal = op.getValue();
+    for(auto &op: transaction.getAllWriteOperations()){
+        int dataId = op.getDataId();
+        int dataVal = op.getValue();
         for(auto &dm: op.getWriteManagerIds()){
             if(!managers[dm].isDown()){
                 managers[dm].setDataSnapshot(dataId, dataVal, globalClock);
@@ -109,6 +112,8 @@ string TransactionManager::readData(int transactionId, int dataId){
 
     } else if (!canReadFrom.empty()){
         // Wait for at least one site to be up
+
+        // Shouldn't erase if trans is used later
         runningTransactions.erase(transactionId);
 
         trans->setPendingOperation({OpType::READ, dataId});
@@ -145,6 +150,8 @@ string TransactionManager::writeData(int transactionId, int dataId, int dataValu
 
     if(writesTo.empty()){
         //add to pending operations
+
+        // Shouldn't erase if trans is used later
         runningTransactions.erase(transactionId);
 
         trans->setPendingOperation({OpType::WRITE, dataId, dataValue});
