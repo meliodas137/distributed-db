@@ -52,6 +52,8 @@ public:
   vector<pair<int, EdgeType>> getEdges();
   vector<int> getPendingOperation();
   void setPendingOperation(vector<int>);
+  int getWriteTime(int op_id);
+  int getReadTime(int op_id);
 };
 }
 #endif 
