@@ -1,6 +1,5 @@
 #include <iostream>
 #include "distributedDB/utils/utils.hpp"
-#include "distributedDB/data_manager/DataManager.hpp"
 using namespace std;
 
 namespace distributedDB {
@@ -52,7 +51,7 @@ bool safeTransaction(unordered_map<int, Transaction*> &commitedTransactions, Tra
             }
         }
     }
-    
+
     return true;
 }
 
