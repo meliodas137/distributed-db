@@ -99,8 +99,9 @@ string runCommand(TransactionManager &tm, vector<string> &cmdArgs) {
             return tm.writeData(transactionId, dataId, dataValue);
         }
     }
-    catch(...){
-        return formatError;
+    catch(const std::exception &exc){
+        std::cerr << exc.what();
+        return "";
     }
     return "INVALID COMMAND";
 }
