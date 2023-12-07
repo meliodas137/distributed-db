@@ -55,11 +55,62 @@ bool safeTransaction(unordered_map<int, Transaction*> &commitedTransactions, Tra
     return true;
 }
 
+
+bool dfs(unordered_map<int, Transaction*> &commitedTransactions, int t_id, unordered_map<int, int> reached, int rwcount){
+    bool consecutiveRWRW = true;
+    if(rwcount < 2) {
+        consecutiveRWRW = false;
+    }
+    for(auto &edge:commitedTransactions[t_id]->getEdges()) {
+        if(reached[edge.first]) {
+            if(consecutiveRWRW) return consecutiveRWRW;
+            else continue;
+        }
+        if(edge.second == READ_WRITE) {
+            rwcount++;
+        } else if(rwcount < 2) {
+            rwcount = 0;
+        }
+        reached[edge.first] = 1;
+        if(dfs(commitedTransactions, edge.first, reached, rwcount)){
+            return true;
+        }
+        reached[edge.first] = 0;
+        if(edge.second == READ_WRITE) {
+            rwcount--;
+        }
+    }
+    return false;
+}
+
 bool hasRWRWCycle(unordered_map<int, Transaction*> &commitedTransactions, int t_id) {
-    // TODO: Handle proper cycle abort checks
     if(t_id < 0) return false;
     
     auto root = commitedTransactions[t_id];
+
+    int rwcount = 0;
+    
+    unordered_map<int, int> reached;
+
+    for(auto &t: commitedTransactions) {
+        reached[t.second->t_id] = 0;
+    }
+    reached[t_id] = 1;
+
+    for(auto &edge:root->getEdges()) {
+        if(edge.second == READ_WRITE) {
+            rwcount++;
+        }
+        reached[edge.first] = 1;
+        if(dfs(commitedTransactions, edge.first, reached, rwcount)){
+            return true;
+        }
+        reached[edge.first] = 0;
+        if(edge.second == READ_WRITE) {
+            rwcount--;
+        }
+    }
+
     return false;
 }
 
