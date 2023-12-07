@@ -29,8 +29,6 @@ string findAndReplaceAll(string s, string toReplace, string replaceWith){
 }
 
 bool safeTransaction(unordered_map<int, Transaction*> &commitedTransactions, Transaction &t, vector<DataManager> &managers) {
-    if(commitedTransactions.empty()) return true; 
-    
     // Checking if anyone of the sites are up after the write and before the commit
     for(auto &op: t.getAllWriteOperations()) {
         for(auto &id: op.getWriteManagerIds()) {
