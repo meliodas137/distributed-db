@@ -31,9 +31,15 @@ void Transaction::addEdge(int t_id, EdgeType type){
 }
 
 void Transaction::removeEdges(int t_id){
-    outEdges.erase(remove(outEdges.begin(), outEdges.end(), make_pair(t_id, EdgeType::READ_WRITE)), outEdges.end());
-    outEdges.erase(remove(outEdges.begin(), outEdges.end(), make_pair(t_id, EdgeType::WRITE_READ)), outEdges.end());
-    outEdges.erase(remove(outEdges.begin(), outEdges.end(), make_pair(t_id, EdgeType::WRITE_WRITE)), outEdges.end());
+
+    vector<pair<int, EdgeType>> edges;
+    for(auto &edge:outEdges) {
+        if(edge.first != t_id) {
+            edges.emplace_back(edge);
+        }
+    }
+    outEdges = edges;
+    return;
 }
 
 vector<pair<int, EdgeType>> Transaction::getEdges(){
