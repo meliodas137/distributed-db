@@ -14,6 +14,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <algorithm>
 #include "distributedDB/transaction_manager/operation/operation.hpp"
 
 using namespace std;
@@ -50,10 +51,13 @@ public:
   bool hasLocalCopy(int dataId, int &localVal);
   vector<Operation> getAllWriteOperations();
   vector<pair<int, EdgeType>> getEdges();
+  void removeEdges(int t_id);
   vector<int> getPendingOperation();
   void setPendingOperation(vector<int>);
   int getWriteTime(int op_id);
   int getReadTime(int op_id);
+  unordered_map<int, int> getReadSet();
+  unordered_map<int, int> getWriteSet();
 };
 }
 #endif 

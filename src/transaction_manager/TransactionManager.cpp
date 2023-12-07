@@ -37,6 +37,7 @@ string TransactionManager::endTransaction(int transactionId){
     incrementClock();
     auto &transaction = runningTransactions[transactionId];
     runningTransactions.erase(transactionId);
+    transaction->setCommitTime(globalClock);
     
     //TODO abort conditions: first committer wins, rwrw edges, if t writes to any site s and s fails before t commits
 

@@ -1,5 +1,7 @@
 #include "distributedDB/transaction_manager/transaction/Transaction.hpp"
 #include <iostream>
+
+using namespace std;
 namespace distributedDB {
 
 Transaction::Transaction(int t_id, int beginTime): t_id(t_id), beginTime(beginTime) {};
@@ -26,6 +28,12 @@ void Transaction::addEdge(int t_id, EdgeType type){
     }
 
     outEdges.emplace_back(make_pair(t_id, type));
+}
+
+void Transaction::removeEdges(int t_id){
+    outEdges.erase(remove(outEdges.begin(), outEdges.end(), make_pair(t_id, EdgeType::READ_WRITE)), outEdges.end());
+    outEdges.erase(remove(outEdges.begin(), outEdges.end(), make_pair(t_id, EdgeType::WRITE_READ)), outEdges.end());
+    outEdges.erase(remove(outEdges.begin(), outEdges.end(), make_pair(t_id, EdgeType::WRITE_WRITE)), outEdges.end());
 }
 
 vector<pair<int, EdgeType>> Transaction::getEdges(){
@@ -84,5 +92,13 @@ int Transaction::getReadTime(int op_id){
     }
     return -1;
 }
+
+unordered_map<int, int> Transaction::getReadSet(){
+    return readSet;
+};
+
+unordered_map<int, int> Transaction::getWriteSet(){
+    return writeSet;
+};
 
 }
