@@ -178,6 +178,8 @@ string TransactionManager::recoverDataManager(int dataManagerId){
     }
     managers[dataManagerId].upStatus(globalClock);
 
+    cout << "Site " + to_string(dataManagerId) + " has recovered." << endl;
+
     //run any pending transactions that depend on data items of the current site
     for(auto &var: dmToVarList[dataManagerId]){
         auto &dataId = var.first;
@@ -199,7 +201,7 @@ string TransactionManager::recoverDataManager(int dataManagerId){
         }
 
     }
-    return "Site " + to_string(dataManagerId) + " has recovered and all possible pending operations have completed.";
+    return "";
 };
 
 string TransactionManager::failDataManager(int dataManagerId){ 
