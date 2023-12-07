@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
     string arg;
 
     while(1){
-        getline (cin, inputCmd);
+        getline(cin, inputCmd);
         //replace all deliminators with space in input command
         inputCmd = findAndReplaceAll(inputCmd, "(", " ");
         inputCmd = findAndReplaceAll(inputCmd, ",", " ");
@@ -130,6 +130,7 @@ int main(int argc, char *argv[]) {
             }  
         }
         cout << runCommand(tm, cmdArgs) << endl;
+        if(cin.eof()) return 0;
     }
 
     return 0;
