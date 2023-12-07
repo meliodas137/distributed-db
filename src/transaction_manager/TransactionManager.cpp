@@ -201,7 +201,7 @@ string TransactionManager::recoverDataManager(int dataManagerId){
         }
 
     }
-    return "";
+    return "Pending Operations completed";
 };
 
 string TransactionManager::failDataManager(int dataManagerId){ 
