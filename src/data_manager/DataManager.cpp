@@ -57,4 +57,10 @@ void DataManager::downStatus(int downTime){
     status = Status::Down;
 };
 
+bool DataManager::siteUpSince(int time){
+    if(isDown()) return false;
+    if(upHistory.empty()) return true;
+    if(lastUpTime <= time) return true;
+    return false;
+}
 }

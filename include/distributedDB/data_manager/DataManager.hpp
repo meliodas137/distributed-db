@@ -34,5 +34,6 @@ public:
     void upStatus(int upTime);
     void downStatus(int downTime);
     bool isDown();
+    bool siteUpSince(int time);
 };
 }
