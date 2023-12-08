@@ -18,11 +18,11 @@ vector<int> Operation::getWriteManagerIds(){
     return writeManagerIds;
 }
 
-bool Operation::isReadType(){
-    return type == OpType::READ;
-}
+// bool Operation::isReadType(){
+//     return type == OpType::READ;
+// }
 
-bool Operation::isWriteType(){
-    return type == OpType::WRITE;
-}
+// bool Operation::isWriteType(){
+//     return type == OpType::WRITE;
+// }
 }

@@ -38,8 +38,8 @@ public:
   int getDataId();
   int getValue();
   vector<int> getWriteManagerIds();
-  bool isReadType();
-  bool isWriteType();
+  // bool isReadType();
+  // bool isWriteType();
 };
 }
 #endif 
