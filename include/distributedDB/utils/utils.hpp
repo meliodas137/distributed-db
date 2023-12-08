@@ -11,7 +11,7 @@
 
 #include <vector>
 #include <string>
-#include "distributedDB/transaction_manager/transaction/transaction.hpp"
+#include "distributedDB/transaction_manager/transaction/Transaction.hpp"
 #include "distributedDB/data_manager/DataManager.hpp"
 
 using namespace std;

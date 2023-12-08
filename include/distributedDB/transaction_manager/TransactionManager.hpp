@@ -16,7 +16,7 @@
 #include <unordered_map>
 #include "distributedDB/data_manager/DataManager.hpp"
 #include "distributedDB/transaction_manager/transaction/Transaction.hpp"
-#include "distributedDB/transaction_manager/operation/operation.hpp"
+#include "distributedDB/transaction_manager/operation/Operation.hpp"
 
 using namespace std;
 
