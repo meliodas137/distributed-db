@@ -15,7 +15,6 @@
 #include <string>
 #include <unordered_map>
 #include "distributedDB/data_manager/DataManager.hpp"
-//#include "distributedDB/transaction_manager/graph/Graph.hpp"
 #include "distributedDB/transaction_manager/transaction/Transaction.hpp"
 #include "distributedDB/transaction_manager/operation/operation.hpp"
 
@@ -35,8 +34,6 @@ public:
   unordered_map<int, Transaction*> commitedTransactions; // (T_id, T)
   unordered_map<int, Transaction*> runningTransactions; // (T_id, T)
   unordered_map<int, vector<Transaction*>> pendingTransactions; // (x_id, [T1, T2]) -> T1 and T2 waiting on x_id
-
-  //Graph* serializationGraph = new Graph();
 
 private:
   int incrementClock();
