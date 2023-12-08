@@ -11,11 +11,9 @@ TransactionManager::TransactionManager(int dmCount, int varCount, vector<vector<
     varToDmList = vector<vector<int>>(varCount+1, vector<int>());
     incrementClock();
     for(int i = 0; i <= dmCount; i++) {
-        //cout<<"creating manager "<<i<<endl;
         managers.emplace_back(DataManager(dmToVarList[i]));
 
         for(auto &var: dmToVarList[i]) {
-            // cout<<var<<endl;
             varToDmList[var.first].emplace_back(i);
         }
     }

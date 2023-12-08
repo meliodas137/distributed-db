@@ -123,7 +123,6 @@ int main(int argc, char *argv[]) {
         istringstream is(inputCmd);
         vector<string> cmdArgs;
         while(getline(is, arg, ' ')){
-            // cout << "curr arg" << arg << "after arg" << endl;
             if(arg != "") {
                 cmdArgs.push_back(arg);
             }  

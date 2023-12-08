@@ -7,7 +7,6 @@ namespace distributedDB {
 DataManager::DataManager(vector<pair<int, bool>> &dataitems) {
     for(auto &item: dataitems) {
         dataMap[item.first] = new Data(item.first, item.second);
-       // cout<<"adding data item "<<item<<endl;
     }
 };
 
@@ -18,7 +17,6 @@ void DataManager::setDataSnapshot(int dataId, int value, int time){
 
 pair<int,int> DataManager::getDataSnapshot(int dataId, int time){
     //return data value at time 
-    //cout << "searching for data item" << dataId << endl;
     return dataMap[dataId]->getDataSnapshot(time);
 };
 
